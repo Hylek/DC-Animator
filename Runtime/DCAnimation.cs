@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 // Made by Daniel Cumbor in 2024
 
-[DeclareFoldoutGroup("coreBox", Title = "Core Settings", Expanded = true)]
+[DeclareFoldoutGroup("coreBox", Title = "Core Settings")]
 [DeclareFoldoutGroup("delayBox", Title = "Delay Settings")]
 [DeclareFoldoutGroup("modeBox", Title = "Mode Settings")]
 
@@ -16,9 +16,10 @@ using UnityEngine.UI;
 [Serializable]
 public class DCAnimation
 {
+    [Title("$" + nameof(animationName))]
     
     // Animation Data
-    [Group("coreBox")] public string animationName;
+    public string animationName;
     [Group("coreBox")] public DCAnimationType type;
     [Group("coreBox")] public DCAnimationMode mode;
     
