@@ -1,30 +1,55 @@
 using System;
 using TMPro;
+using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
 // Made by Daniel Cumbor in 2024
+
+[DeclareFoldoutGroup("coreBox", Title = "Core Settings", Expanded = true)]
+[DeclareFoldoutGroup("delayBox", Title = "Delay Settings")]
+[DeclareFoldoutGroup("modeBox", Title = "Mode Settings")]
+
+[DeclareHorizontalGroup("values")]
+[DeclareHorizontalGroup("delay")]
 
 [Serializable]
 public class DCAnimation
 {
     
     // Animation Data
-    public string animationName;
-    public DCAnimationType type;
-    public DCAnimationMode mode;
-    public EasingMethods.Ease easeType;
-    public DCAnimatorComponentType componentType;
-    public float startDelay, endDelay;
-    public bool applyStartValuesImmediately;
-    public float startValue, endValue;
-    public float speedValue;
-    public Vector3 startPosition = Vector3.zero;
-    public Vector3 endPosition = Vector3.zero;
+    [Group("coreBox")] public string animationName;
+    [Group("coreBox")] public DCAnimationType type;
+    [Group("coreBox")] public DCAnimationMode mode;
+    
+    [HideIf(nameof(type), DCAnimationType.Fade)]
+    [Group("coreBox")] public EasingMethods.Ease easeType;
+    
+    [ShowIf(nameof(type), DCAnimationType.Fade)]
+    [Group("coreBox")] public DCAnimatorComponentType componentType;
+    
+    [Group("delayBox")] public float startDelay;
+    [Group("delayBox")] public float endDelay;
+    
+    [Group("modeBox")] public bool applyStartValuesImmediately;
+    
+    [HideIf(nameof(type), DCAnimationType.Move)]
+    [Group("modeBox")] public float startValue;
+
+    [HideIf(nameof(type), DCAnimationType.Move)]
+    [Group("modeBox")] public float endValue;
+    
+    [ShowIf(nameof(type), DCAnimationType.Move)]
+    [Group("modeBox")] public Vector3 startPosition = Vector3.zero;
+    
+    [ShowIf(nameof(type), DCAnimationType.Move)]
+    [Group("modeBox")] public Vector3 endPosition = Vector3.zero;
+    
+    [Group("modeBox")] public float speedValue;
     
     // Events
-    public event Action AnimationStarted;
-    public event Action AnimationComplete;
+    public event Action<DCAnimation> AnimationStarted;
+    public event Action<DCAnimation> AnimationComplete;
     
     // Component References
     private Transform _transform;
@@ -54,8 +79,16 @@ public class DCAnimation
         else
         {
             _delayType = DCDelayType.None;
+            AnimationStarted?.Invoke(this);
             _canTransition = true;
         }
+    }
+
+    public string DynamicTitle() => animationName;
+
+    public void StopAnimation()
+    {
+        _canTransition = false;
     }
     
     public void SetReference(Component component)
@@ -75,15 +108,13 @@ public class DCAnimation
     {
         if (_delayType is DCDelayType.Start)
         {
-            Debug.Log($"Start delay is complete, animation starting! {_currentTime}");
-            AnimationStarted?.Invoke();
+            AnimationStarted?.Invoke(this);
             _canTransition = true;
         }
 
-        if (_delayType is DCDelayType.End)
+        if (_delayType is DCDelayType.End or DCDelayType.None)
         {
-            Debug.Log("End delay is complete, animation complete!");
-            AnimationComplete?.Invoke();
+            AnimationComplete?.Invoke(this);
         }
 
         _delayTimer.OnTimerComplete -= TimerComplete;
@@ -212,7 +243,7 @@ public class DCAnimation
         var z = EasingMethods.GetEasingFunction(easeType)
             .Invoke(startPosition.z, endPosition.z, _currentTime);
 
-        if (!_isUserInterface)
+        if (_isUserInterface)
         {
             _rectTransform.anchoredPosition = new Vector2(x, y);
         }
@@ -236,7 +267,7 @@ public class DCAnimation
         else
         {
             _delayType = DCDelayType.None;
-            AnimationComplete?.Invoke();
+            AnimationComplete?.Invoke(this);
         }
     }
 }

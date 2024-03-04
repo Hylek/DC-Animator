@@ -2,15 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements.Experimental;
 
 // Made by Daniel Cumbor in 2024
 
+// todo: Possibly redundant, only really used to determine type of fade, could be achieved automatically?
 public enum DCAnimatorComponentType
 {
-    Sprite, UI, Text, TransformOnly
+    Sprite, UI, Text
 }
 
 public enum DCAnimationType
@@ -30,6 +32,10 @@ public enum DCDelayType
 
 public class DCAnimator : MonoBehaviour
 {
+    [ListDrawerSettings(Draggable = true,
+        HideAddButton = false,
+        HideRemoveButton = false,
+        AlwaysExpanded = true)]
     public List<DCAnimation> animations;
 
     #region PrivateVariables
