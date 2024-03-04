@@ -32,6 +32,9 @@ public enum DCDelayType
 
 public class DCAnimator : MonoBehaviour
 {
+    public event Action EntryAnimationsComplete;
+    public event Action ExitAnimationsComplete;
+    
     [ListDrawerSettings(Draggable = true,
         HideAddButton = false,
         HideRemoveButton = false,
@@ -52,6 +55,8 @@ public class DCAnimator : MonoBehaviour
     private Image _uiImage;
     private TMP_Text _textLabel;
     private Sprite _sprite;
+    private int _activeCompletionCount;
+    private DCAnimationMode _currentMode;
 
     #endregion
 
@@ -112,6 +117,7 @@ public class DCAnimator : MonoBehaviour
 
     public void StartAnimationsByMode(DCAnimationMode mode)
     {
+        _currentMode = mode;
         _activeAnimations.Clear();
         
         if (mode == DCAnimationMode.Manual)
@@ -139,6 +145,7 @@ public class DCAnimator : MonoBehaviour
         
         foreach (var animationData in animations.Where(animationData => animationData.animationName == animationName))
         {
+            animationData.AnimationComplete += OnActiveAnimationComplete;
             _activeAnimations.Add(animationData);
             animationData.StartAnimation();
 
@@ -146,6 +153,24 @@ public class DCAnimator : MonoBehaviour
         }
         Debug.LogWarning($"UI Animator Warning:" +
                          $"The requested animation to play on {gameObject.name} does not exist.");
+    }
+
+    private void OnActiveAnimationComplete(DCAnimation obj)
+    {
+        _activeCompletionCount++;
+
+        if (_activeCompletionCount < _activeAnimations.Count) return;
+
+        if (_currentMode == DCAnimationMode.OnEntry)
+        {
+            EntryAnimationsComplete?.Invoke();
+        }
+        else if (_currentMode == DCAnimationMode.OnExit)
+        {
+            ExitAnimationsComplete?.Invoke();
+        }
+
+        _activeCompletionCount = 0;
     }
 
     #endregion
