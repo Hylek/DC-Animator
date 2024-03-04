@@ -1,0 +1,41 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.danielcumbor.uianimator/Editor/dcanimatorstyle.uss?fileID=7433441132597879392&amp;guid=79761c17f5ad04db69b9987d0bdb2e60&amp;type=3#dcanimatorstyle" />
+    <ui:VisualElement name="Parent" style="flex-grow: 1; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(178, 178, 178); padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
+        <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" binding-path="animationName" name="AnimationName" style="-unity-font-style: bold;" />
+        <ui:TextField picking-mode="Ignore" label="Name" name="AnimationNameField" binding-path="animationName" style="padding-bottom: 10px;" />
+        <ui:VisualElement name="CoreSettingsSection" class="settingsSectionElement" style="flex-grow: 1; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;">
+            <ui:Label tabindex="-1" text="Core Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CoreSettingsTitle" style="-unity-font-style: bold;" />
+            <ui:EnumField label="Type" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" binding-path="type" name="AnimationType" />
+            <ui:EnumField label="Trigger Event" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" name="EventMode" binding-path="mode" />
+            <ui:FloatField label="Start Delay" value="0" name="StartDelay" binding-path="startDelay" />
+            <ui:FloatField label="End Delay" value="0" name="EndDelay" binding-path="endDelay" />
+        </ui:VisualElement>
+        <ui:VisualElement name="FadeSettingsSection" class="settingsSectionElement" style="display: flex;">
+            <ui:Label tabindex="-1" text="Fade Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" name="FadeSettingsSection" style="-unity-font-style: bold;" />
+            <ui:EnumField label="Component Type" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" binding-path="componentType" name="AnimationType" />
+            <ui:FloatField label="Fade Start" value="42.2" name="F_StartValue" binding-path="startValue" />
+            <ui:FloatField label="Fade End" value="42.2" name="F_EndValue" focusable="false" binding-path="endValue" />
+            <ui:FloatField label="Fade Speed" value="0" name="F_Speed" binding-path="speedValue" />
+        </ui:VisualElement>
+        <ui:VisualElement name="ScaleSettingsSection" class="settingsSectionElement" style="flex-grow: 1;">
+            <ui:Label tabindex="-1" text="Scale Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" name="S_Title" style="-unity-font-style: bold;" />
+            <ui:EnumField label="Ease Type" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" name="S_EaseType" binding-path="easeType" />
+            <ui:FloatField label="Scale Start" value="0" name="S_StartValue" binding-path="startValue" />
+            <ui:FloatField label="End Value" value="0" name="S_EndValue" binding-path="endValue" />
+            <ui:FloatField label="Scale Speed" value="0" name="S_Speed" binding-path="speedValue" />
+        </ui:VisualElement>
+        <ui:VisualElement name="MoveSettingsSection" class="settingsSectionElement" style="flex-grow: 1;">
+            <ui:Label tabindex="-1" text="Move Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" name="M_Title" style="-unity-font-style: bold;" />
+            <ui:EnumField label="Ease Type" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" name="M_EaseType" binding-path="easeType" />
+            <ui:VisualElement name="M_StartSection" class="movePositionSection">
+                <ui:Vector3Field label="Start Position" binding-path="startPosition" name="M_StartPos" />
+                <ui:Button text="Set Current Position" parse-escape-sequences="true" display-tooltip-when-elided="true" name="M_StartSet" style="margin-top: 10px;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="M_EndSection" class="movePositionSection" style="flex-grow: 1;">
+                <ui:Vector3Field label="End Position" name="M_EndPos" binding-path="endPosition" />
+                <ui:Button text="Set Current Position" parse-escape-sequences="true" display-tooltip-when-elided="true" name="M_EndSet" style="margin-top: 10px; margin-right: 2px; margin-left: 2px;" />
+            </ui:VisualElement>
+            <ui:FloatField label="Move Speed" value="0" name="M_Speed" binding-path="speedValue" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

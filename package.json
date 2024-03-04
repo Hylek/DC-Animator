@@ -1,0 +1,13 @@
+{
+	"name": "com.danielcumbor.dcanimator",
+	"version": "0.2.0",
+	"displayName": "DC Animator for uGUI and 2D",
+	"description": "A custom Unity tool for animating objects programmatically without having to deal with animators or animation timelines.",
+	"unity": "2022.3",
+	"unityRelease": "15f1",
+	"author": {
+		"name": "Daniel Cumbor",
+		"email": "dan-dev@proton.me",
+		"url": "https://www.danielcumbor.uk"
+	}
+}

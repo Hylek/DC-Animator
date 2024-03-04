@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Label tabindex="-1" text="DC Animator" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title" style="font-size: 20px; -unity-text-align: upper-center;" />
+    <uie:PropertyField binding-path="animations" />
+</ui:UXML>
