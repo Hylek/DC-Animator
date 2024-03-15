@@ -5,7 +5,6 @@ using TMPro;
 using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements.Experimental;
 
 // Made by Daniel Cumbor in 2024
 
@@ -46,6 +45,10 @@ public class DCAnimator : MonoBehaviour
     private bool _isUserInterface;
     private bool _hasReferences;
     private List<DCAnimation> _activeAnimations;
+    private int _activeCompletionCount;
+    private int _activeAnimationCount;
+    private bool _removeFlag;
+    private DCAnimationMode _currentMode;
 
     #endregion
 
@@ -55,8 +58,6 @@ public class DCAnimator : MonoBehaviour
     private Image _uiImage;
     private TMP_Text _textLabel;
     private Sprite _sprite;
-    private int _activeCompletionCount;
-    private DCAnimationMode _currentMode;
 
     #endregion
 
@@ -89,10 +90,16 @@ public class DCAnimator : MonoBehaviour
                     break;
                 case DCAnimationType.Scale: dcAnimation.SetReference(transform); break;
                 case DCAnimationType.Move:
-                    var transformNeeded = dcAnimation.componentType == DCAnimatorComponentType.UI
-                        ? GetComponent<RectTransform>()
-                        : GetComponent<Transform>();
-                    dcAnimation.SetReference(transformNeeded);
+                    var rectTransform = GetComponent<RectTransform>();
+                    if (!rectTransform)
+                    {
+                        var transformNorm = GetComponent<Transform>();
+                        dcAnimation.SetReference(transformNorm);
+                    }
+                    else
+                    {
+                        dcAnimation.SetReference(rectTransform);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(
@@ -103,10 +110,15 @@ public class DCAnimator : MonoBehaviour
 
     private void Update()
     {
-        if (_activeAnimations.Count <= 0) return;
+        if (_activeAnimations.Count <= 0 || _removeFlag) return;
             
         foreach (var dcAnimation in _activeAnimations)
         {
+            if (dcAnimation.IsFinished)
+            {
+                _activeAnimations.Remove(dcAnimation);
+                return;
+            }
             dcAnimation.Update();
         }
     }
@@ -118,7 +130,6 @@ public class DCAnimator : MonoBehaviour
     public void StartAnimationsByMode(DCAnimationMode mode)
     {
         _currentMode = mode;
-        _activeAnimations.Clear();
         
         if (mode == DCAnimationMode.Manual)
         {
@@ -132,17 +143,17 @@ public class DCAnimator : MonoBehaviour
             animations.Where(animationData => animationData.mode == mode).ToList();
 
         _activeAnimations = animationsByMode;
+        _activeAnimationCount += _activeAnimations.Count;
 
         foreach (var animationData in _activeAnimations)
         {
+            animationData.AnimationComplete += OnActiveAnimationComplete;
             animationData.StartAnimation();
         }
     }
 
     public void StartAnimationByName(string animationName, Action onAnimationComplete = null)
     {
-        _activeAnimations.Clear();
-        
         foreach (var animationData in animations.Where(animationData => animationData.animationName == animationName))
         {
             animationData.AnimationComplete += OnActiveAnimationComplete;
@@ -155,11 +166,12 @@ public class DCAnimator : MonoBehaviour
                          $"The requested animation to play on {gameObject.name} does not exist.");
     }
 
-    private void OnActiveAnimationComplete(DCAnimation obj)
+    private void OnActiveAnimationComplete(DCAnimation activeAnimation)
     {
+        activeAnimation.AnimationComplete -= OnActiveAnimationComplete;
         _activeCompletionCount++;
-
-        if (_activeCompletionCount < _activeAnimations.Count) return;
+ 
+        if (_activeCompletionCount < _activeAnimationCount) return;
 
         if (_currentMode == DCAnimationMode.OnEntry)
         {
@@ -169,8 +181,8 @@ public class DCAnimator : MonoBehaviour
         {
             ExitAnimationsComplete?.Invoke();
         }
-
         _activeCompletionCount = 0;
+        _activeAnimationCount = 0;
     }
 
     #endregion

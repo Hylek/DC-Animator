@@ -51,7 +51,8 @@ public class DCAnimation
     // Events
     public event Action<DCAnimation> AnimationStarted;
     public event Action<DCAnimation> AnimationComplete;
-    
+    public bool IsFinished { get; set; }
+
     // Component References
     private Transform _transform;
     private RectTransform _rectTransform;
@@ -68,6 +69,7 @@ public class DCAnimation
 
     public void StartAnimation()
     {
+        IsFinished = false;
         _currentTime = 0;
         SetStartValue();
         if (startDelay > 0)
@@ -115,6 +117,7 @@ public class DCAnimation
 
         if (_delayType is DCDelayType.End or DCDelayType.None)
         {
+            Debug.Log($"{animationName} has finished!");
             AnimationComplete?.Invoke(this);
         }
 
@@ -267,7 +270,9 @@ public class DCAnimation
         }
         else
         {
+            IsFinished = true;
             _delayType = DCDelayType.None;
+            Debug.Log($"{animationName} has finished!");
             AnimationComplete?.Invoke(this);
         }
     }
