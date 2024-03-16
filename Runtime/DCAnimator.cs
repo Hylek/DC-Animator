@@ -166,6 +166,10 @@ public class DCAnimator : MonoBehaviour
                          $"The requested animation to play on {gameObject.name} does not exist.");
     }
 
+    #endregion
+
+    #region PrivateMethods
+    
     private void OnActiveAnimationComplete(DCAnimation activeAnimation)
     {
         activeAnimation.AnimationComplete -= OnActiveAnimationComplete;
@@ -184,11 +188,6 @@ public class DCAnimator : MonoBehaviour
         _activeCompletionCount = 0;
         _activeAnimationCount = 0;
     }
-
-    #endregion
-
-    #region PrivateMethods
-    
 
     #endregion
 }

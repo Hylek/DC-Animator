@@ -114,13 +114,10 @@ public class DCAnimation
             AnimationStarted?.Invoke(this);
             _canTransition = true;
         }
-
         if (_delayType is DCDelayType.End or DCDelayType.None)
         {
-            Debug.Log($"{animationName} has finished!");
             AnimationComplete?.Invoke(this);
         }
-
         _delayTimer.OnTimerComplete -= TimerComplete;
     }
 
@@ -134,7 +131,6 @@ public class DCAnimation
         if (!_canTransition) return;
         
         _currentTime += Time.deltaTime * speedValue;
-        
         ProcessAnimation();
 
         if (_currentTime >= 1)
@@ -272,7 +268,6 @@ public class DCAnimation
         {
             IsFinished = true;
             _delayType = DCDelayType.None;
-            Debug.Log($"{animationName} has finished!");
             AnimationComplete?.Invoke(this);
         }
     }
